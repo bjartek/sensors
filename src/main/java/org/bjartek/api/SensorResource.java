@@ -61,7 +61,6 @@ public class SensorResource {
 
         Collection collection = Collection.create(info.getRequestUri(), loadLinks(), items, loadQueries(), tpl, null);
 
-        System.out.println("start list of sensors");
         EntityTag tag = new EntityTag(last.getEtag());
 
         CacheControl cacheControl = new CacheControl();
