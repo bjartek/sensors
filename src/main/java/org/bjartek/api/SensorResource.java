@@ -34,7 +34,7 @@ public class SensorResource {
             location  = "The shelf above the TV";
             latestHumidity = Optional.of(18.2);
             latestTemperature = Optional.of(20.0);
-            latestReading = Optional.of(LocalDateTime.now());
+            latestReading = Optional.of(LocalDateTime.parse("2015-08-04T10:11:30"));
         }};
 
         SensorDTO outside = new SensorDTO(){{
@@ -42,7 +42,7 @@ public class SensorResource {
             location  = "On the wall outside the living room window";
             latestHumidity = Optional.of(17.2);
             latestTemperature = Optional.of(25.0);
-            latestReading = Optional.of(LocalDateTime.now());
+            latestReading = Optional.of(LocalDateTime.parse("2015-08-04T10:11:30"));
         }};
         resource =  asList(livingRoom, outside);
 
@@ -55,10 +55,14 @@ public class SensorResource {
 
         Template tpl = Template.create(asList(Property.template("name"),Property.template("location") ));
 
-        Collection collection = Collection.create(info.getRequestUri(), loadLinks(), loadItems(), loadQueries(), tpl, null);
+        List<Item> items = loadItems();
+
+        SensorDTO last = (SensorDTO) resource.get(resource.size() - 1);
+
+        Collection collection = Collection.create(info.getRequestUri(), loadLinks(), items, loadQueries(), tpl, null);
 
         System.out.println("start list of sensors");
-        EntityTag tag = new EntityTag(collection.hashCode() + "");
+        EntityTag tag = new EntityTag(last.getEtag());
 
         CacheControl cacheControl = new CacheControl();
         cacheControl.setMaxAge(1200);
