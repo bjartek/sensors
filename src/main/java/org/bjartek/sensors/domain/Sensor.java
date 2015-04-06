@@ -1,4 +1,4 @@
-package org.bjartek.domain;
+package org.bjartek.sensors.domain;
 
 import java.util.ArrayList;
 import java.util.List;

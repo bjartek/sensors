@@ -1,4 +1,4 @@
-package org.bjartek;
+package org.bjartek.sensors;
 
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;

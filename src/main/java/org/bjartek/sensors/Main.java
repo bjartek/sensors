@@ -1,6 +1,6 @@
-package org.bjartek;
+package org.bjartek.sensors;
 
-import org.bjartek.utility.CollectionJsonReaderAndWriter;
+import org.bjartek.sensors.utility.CollectionJsonReaderAndWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.message.DeflateEncoder;

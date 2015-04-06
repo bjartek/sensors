@@ -1,11 +1,11 @@
-package org.bjartek.api;
+package org.bjartek.sensors.api;
 
 import net.hamnaberg.json.*;
 import net.hamnaberg.json.Collection;
 import net.hamnaberg.json.Link;
-import org.bjartek.Main;
-import org.bjartek.dto.DTO2O;
-import org.bjartek.dto.SensorDTO;
+import org.bjartek.sensors.Main;
+import org.bjartek.sensors.dto.DTO2O;
+import org.bjartek.sensors.dto.SensorDTO;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.*;

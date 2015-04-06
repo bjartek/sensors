@@ -1,4 +1,4 @@
-package org.bjartek.dto;
+package org.bjartek.sensors.dto;
 
 import java.time.LocalDateTime;
 import java.util.Optional;

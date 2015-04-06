@@ -1,4 +1,4 @@
-package org.bjartek.utility;
+package org.bjartek.sensors.utility;
 
 import net.hamnaberg.json.Collection;
 import net.hamnaberg.json.Template;

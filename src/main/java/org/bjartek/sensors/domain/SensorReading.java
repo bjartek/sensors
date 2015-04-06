@@ -1,4 +1,4 @@
-package org.bjartek.domain;
+package org.bjartek.sensors.domain;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
