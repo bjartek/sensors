@@ -15,7 +15,7 @@ public class SensorDTO extends DTO2O {
 
     @Override
     public String getEtag() {
-        String latest = latestReading.map(r -> latestReading.toString()).orElse("");
-        return name + "-" + latest;
+        String latest = latestReading.map(r -> r.toString()).orElse("");
+        return "" + (name  + latest).hashCode();
     }
 }

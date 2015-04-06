@@ -1,7 +1,10 @@
 package org.bjartek.sensors;
 
+import org.bjartek.sensors.domain.InMemorySensorStore;
+import org.bjartek.sensors.domain.SensorStore;
 import org.bjartek.sensors.utility.CollectionJsonReaderAndWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.message.DeflateEncoder;
 import org.glassfish.jersey.message.GZipEncoder;
@@ -26,8 +29,14 @@ public class Main {
     public static HttpServer startServer() throws IOException {
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
-        final ResourceConfig rc = new ResourceConfig().packages("org.bjartek.api");
+        final ResourceConfig rc = new ResourceConfig().packages("org.bjartek.sensors.api");
 
+        rc.register(new AbstractBinder() {
+            @Override
+            protected void configure() {
+                bind(InMemorySensorStore.class).to(SensorStore.class);
+            }
+        });
         rc.register(CollectionJsonReaderAndWriter.class);
         rc.registerClasses(
                 EncodingFilter.class,
