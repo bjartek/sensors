@@ -27,18 +27,23 @@
             <artifactId>jersey-container-grizzly2-http</artifactId>
         </dependency>
 
-        <!-- uncomment this to get JSON support:
-         <dependency>
-            <groupId>org.glassfish.jersey.media</groupId>
-            <artifactId>jersey-media-moxy</artifactId>
-        </dependency>
-        -->
-
         <!-- Fetch and build yourself from github -->
         <dependency>
             <groupId>net.hamnaberg.rest</groupId>
             <artifactId>json-collection</artifactId>
             <version>4.1-SNAPSHOT</version>
+        </dependency>
+
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>1.0.13</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jul-to-slf4j</artifactId>
+            <version>1.7.5</version>
         </dependency>
 
         <dependency>
