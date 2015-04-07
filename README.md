@@ -1,5 +1,6 @@
 # REST server example with Collection+Json using Jersey/Grizzly
 
+This example is far from done :)
 
 Features
 * gzip encoding

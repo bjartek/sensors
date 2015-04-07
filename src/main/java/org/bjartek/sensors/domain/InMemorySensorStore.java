@@ -1,6 +1,6 @@
 package org.bjartek.sensors.domain;
 
-import org.bjartek.sensors.dto.SensorDTO;
+import org.bjartek.sensors.domain.dto.SensorDTO;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,20 +14,22 @@ public class InMemorySensorStore implements SensorStore {
 
     public InMemorySensorStore() {
 
+
+        //TODO: Here we should really store sensors and SensorReadings and then map them to DTO's when we ask for sensors.
         SensorDTO livingRoom = new SensorDTO(){{
             name = "LivingRoom";
             location  = "The shelf above the TV";
-            latestHumidity = Optional.of(18.2);
-            latestTemperature = Optional.of(20.0);
-            latestReading = Optional.of(LocalDateTime.parse("2015-08-04T10:11:30"));
+            humidity = Optional.of(18.2);
+            temperature = 20.0;
+            time = LocalDateTime.parse("2015-08-04T10:11:30");
         }};
 
         SensorDTO outside = new SensorDTO(){{
             name = "Outside";
             location  = "On the wall outside the living room window";
-            latestHumidity = Optional.of(17.2);
-            latestTemperature = Optional.of(25.0);
-            latestReading = Optional.of(LocalDateTime.parse("2015-08-04T10:11:30"));
+            humidity = Optional.of(17.2);
+            temperature = 25.0;
+            time = LocalDateTime.parse("2015-08-04T10:11:30");
         }};
         sensors =  asList(livingRoom, outside);
     }
@@ -35,12 +37,15 @@ public class InMemorySensorStore implements SensorStore {
     @Override
     public List<SensorDTO> getAllSensors() {
 
-
         return  sensors;
     }
 
     @Override
     public String generateEtag() {
+
+        if(sensors.isEmpty()) {
+            return "";
+        }
 
         SensorDTO last = sensors.get(sensors.size() - 1);
         return last.getEtag();

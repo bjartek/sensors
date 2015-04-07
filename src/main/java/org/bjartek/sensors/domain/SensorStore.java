@@ -1,6 +1,6 @@
 package org.bjartek.sensors.domain;
 
-import org.bjartek.sensors.dto.SensorDTO;
+import org.bjartek.sensors.domain.dto.SensorDTO;
 
 import java.util.List;
 

@@ -1,4 +1,4 @@
-package org.bjartek.sensors.dto;
+package org.bjartek.sensors.domain.dto;
 
 abstract public class DTO2O {
 
