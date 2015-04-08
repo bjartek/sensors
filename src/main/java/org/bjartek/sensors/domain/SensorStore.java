@@ -14,4 +14,6 @@ public interface SensorStore {
     Optional<Sensor> addSensor(Template template);
 
     boolean deleteSensor(String name);
+
+    boolean updateSensor(String name, Template template);
 }

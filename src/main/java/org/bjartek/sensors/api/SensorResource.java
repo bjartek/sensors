@@ -56,6 +56,18 @@ public class SensorResource {
     }
 
 
+    @PUT
+    @Path("/sensor/{name}")
+    public Response update(@Context UriInfo info, @PathParam("name") String name, Template template) {
+
+        if (sensorStore.updateSensor(name, template)) {
+            return Response.ok().build();
+        } else {
+            return Response.serverError().build();
+        }
+
+    }
+
     @DELETE
     @Path("/sensor/{name}")
     public Response delete(@Context UriInfo info, @PathParam("name") String name) {

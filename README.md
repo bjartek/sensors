@@ -45,5 +45,8 @@ http :8080/sensors
 http :8080/sensors Content-Type:"application/vnd.collection+json" Accept:"*/*" < post.json
 
 ### delete a sensor
-
 http DELETE :8080/sensors/sensor/TestSensor
+
+### update a sensor
+http PUT :8080/sensors/sensor/TestSensor Content-Type:"application/vnd.collection+json" Accept:"*/*" < update.json
+

@@ -101,4 +101,24 @@ public class InMemorySensorStore implements SensorStore {
         return sensors.removeIf(s -> s.name.equalsIgnoreCase(name));
 
     }
+
+    @Override
+    public boolean updateSensor(String name, Template template) {
+        Optional<Value> newName = template.propertyByName("name").flatMap(p -> p.getValue());
+        Optional<Value> newLocation = template.propertyByName("location").flatMap(p -> p.getValue());
+
+        if (!newName.isPresent() || !newLocation.isPresent()) {
+            return false;
+        }
+
+         sensors.stream().filter(s -> s.name.equalsIgnoreCase(name)).forEach(s -> {
+
+             s.name =  newName.get().asString();
+             s.location = newLocation.get().asString();
+             s.time = LocalDateTime.now();
+         });
+
+
+        return true;
+    }
 }
