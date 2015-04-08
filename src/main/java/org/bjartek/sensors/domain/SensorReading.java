@@ -7,7 +7,7 @@ public class SensorReading  {
 
     public LocalDateTime time = LocalDateTime.now();
 
-    public Double celsius;
+    public Double temperature;
 
     public Optional<Double> humidity;
 

@@ -1,8 +1,10 @@
 package org.bjartek.sensors.domain;
 
-import org.bjartek.sensors.domain.dto.SensorDTO;
+import net.hamnaberg.json.Template;
+import net.hamnaberg.json.Value;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -10,44 +12,86 @@ import static java.util.Arrays.asList;
 
 public class InMemorySensorStore implements SensorStore {
 
-    List<SensorDTO> sensors;
+
+    public static List<Sensor> sensors = new ArrayList();
 
     public InMemorySensorStore() {
 
 
-        //TODO: Here we should really store sensors and SensorReadings and then map them to DTO's when we ask for sensors.
-        SensorDTO livingRoom = new SensorDTO(){{
-            name = "LivingRoom";
-            location  = "The shelf above the TV";
-            humidity = Optional.of(18.2);
-            temperature = 20.0;
-            time = LocalDateTime.parse("2015-08-04T10:11:30");
-        }};
+        if(sensors.isEmpty()) {
+            //TODO: Here we should really store sensors and SensorReadings and then map them to DTO's when we ask for sensors.
+            Sensor livingRoom = new Sensor() {{
+                name = "LivingRoom";
+                location = "The shelf above the TV";
+                time = LocalDateTime.parse("2015-08-04T10:11:30");
 
-        SensorDTO outside = new SensorDTO(){{
-            name = "Outside";
-            location  = "On the wall outside the living room window";
-            humidity = Optional.of(17.2);
-            temperature = 25.0;
-            time = LocalDateTime.parse("2015-08-04T10:11:30");
-        }};
-        sensors =  asList(livingRoom, outside);
+                readings = asList(new SensorReading() {{
+                    time = LocalDateTime.parse("2015-08-04T10:11:30");
+                    temperature = 20.0;
+                    humidity = Optional.of(10.0);
+                }});
+            }};
+
+            Sensor outside = new Sensor() {{
+                name = "Outside";
+                location = "On the wall outside the living room window";
+                time = LocalDateTime.parse("2015-08-04T10:11:30");
+
+                readings = asList(new SensorReading() {{
+                    time = LocalDateTime.parse("2015-08-04T10:12:30");
+                    temperature = 22.0;
+                    humidity = Optional.of(12.0);
+                }});
+            }};
+
+            sensors.add(livingRoom);
+            sensors.add(outside);
+        }
     }
 
     @Override
-    public List<SensorDTO> getAllSensors() {
+    public List<Sensor> getAllSensors() {
 
-        return  sensors;
+        return sensors;
     }
 
     @Override
     public String generateEtag() {
 
-        if(sensors.isEmpty()) {
+        if (sensors.isEmpty()) {
             return "";
         }
 
-        SensorDTO last = sensors.get(sensors.size() - 1);
-        return last.getEtag();
+        Sensor last = sensors.get(sensors.size() - 1);
+        return last.getLatestUpdated().hashCode() + "";
+    }
+
+    @Override
+    public Optional<Sensor> addSensor(Template template) {
+
+        Optional<Value> newName = template.propertyByName("name").flatMap(p -> p.getValue());
+        Optional<Value> newLocation = template.propertyByName("location").flatMap(p -> p.getValue());
+        if (!newName.isPresent() || !newLocation.isPresent()) {
+            return Optional.of(null);
+
+        }
+
+        //TODO: Need to check for duplicate name
+
+        String nameOfSensor = newName.get().asString();
+        if(sensors.stream().anyMatch(s -> s.name == nameOfSensor)) {
+            //Throw exception here?
+        }
+
+        Sensor s = new Sensor() {{
+            name = newName.get().asString();
+            location = newLocation.get().asString();
+            time = LocalDateTime.now();
+        }};
+
+        sensors.add(s);
+        return Optional.of(s);
+
+
     }
 }

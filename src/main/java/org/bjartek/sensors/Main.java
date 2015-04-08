@@ -5,41 +5,37 @@ import org.bjartek.sensors.domain.SensorStore;
 import org.bjartek.sensors.utility.CollectionJsonReaderAndWriter;
 import org.glassfish.grizzly.http.server.HttpServer;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import org.glassfish.jersey.filter.LoggingFilter;
 import org.glassfish.jersey.grizzly2.httpserver.GrizzlyHttpServerFactory;
 import org.glassfish.jersey.message.DeflateEncoder;
 import org.glassfish.jersey.message.GZipEncoder;
 import org.glassfish.jersey.server.ResourceConfig;
 import org.glassfish.jersey.server.filter.EncodingFilter;
-import org.slf4j.bridge.SLF4JBridgeHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.Logger;
 
 /**
  * Main class.
- *
  */
 public class Main {
     // Base URI the Grizzly HTTP server will listen on
     public static final URI BASE_URI = URI.create("http://localhost:8080/sensors/");
 
+    private static final Logger logger = LoggerFactory.getLogger(Main.class.getName());
+
+
     /**
      * Starts Grizzly HTTP server exposing JAX-RS resources defined in this application.
+     *
      * @return Grizzly HTTP server.
      */
     public static HttpServer startServer() throws IOException {
 
-        SLF4JBridgeHandler.removeHandlersForRootLogger();
-        LogManager.getLogManager().reset();
-        SLF4JBridgeHandler.install();
 
-        Logger global = Logger.getGlobal();
-        global.setLevel(Level.FINEST);
-        global.fine("Test JUL to slf4j bridge");
-
+        logger.debug("Application '{}' initialized", Main.class.getName());
 
         // create a resource config that scans for JAX-RS resources and providers
         // in com.example package
@@ -50,12 +46,13 @@ public class Main {
                     protected void configure() {
                         bind(InMemorySensorStore.class).to(SensorStore.class);
                     }
-        })
+                })
+                .registerInstances(new LoggingFilter(java.util.logging.Logger.getLogger(Main.class.getName()), true))
                 .register(CollectionJsonReaderAndWriter.class)
                 .registerClasses(
                         EncodingFilter.class,
-                GZipEncoder.class,
-                DeflateEncoder.class);
+                        GZipEncoder.class,
+                        DeflateEncoder.class);
 
 
         return GrizzlyHttpServerFactory.createHttpServer(BASE_URI, rc);
@@ -64,6 +61,7 @@ public class Main {
 
     /**
      * Main method.
+     *
      * @param args
      * @throws IOException
      */

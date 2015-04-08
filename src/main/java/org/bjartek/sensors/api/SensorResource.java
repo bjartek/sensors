@@ -5,6 +5,8 @@ import net.hamnaberg.json.Collection;
 import net.hamnaberg.json.Link;
 import net.hamnaberg.json.MediaType;
 import org.bjartek.sensors.Main;
+import org.bjartek.sensors.domain.Sensor;
+import org.bjartek.sensors.domain.SensorReading;
 import org.bjartek.sensors.domain.SensorStore;
 import org.bjartek.sensors.domain.dto.DTO2O;
 import org.bjartek.sensors.domain.dto.SensorDTO;
@@ -23,12 +25,11 @@ import static java.util.Collections.emptyList;
 import static java.util.stream.Collectors.toList;
 
 @Path("/")
-@Produces(MediaType.COLLECTION_JSON)
-@Consumes(MediaType.COLLECTION_JSON)
+@Produces("application/vnd.collection+json")
+@Consumes("application/vnd.collection+json")
 public class SensorResource {
     static final Logger LOG = LoggerFactory.getLogger(SensorResource.class);
 
-    static final java.util.logging.Logger LOG2 = java.util.logging.Logger.getLogger(SensorResource.class.getName());
     @Inject
     SensorStore sensorStore;
 
@@ -37,9 +38,6 @@ public class SensorResource {
     @GET
     public Response list(@Context Request request, @Context UriInfo info) {
 
-       // LOG2.setLevel(Level.ALL);
-        LOG.info("Test");
-        LOG2.fine("foobar");
         Template tpl = Template.create(asList(Property.template("name"), Property.template("location")));
 
         Collection collection = Collection.create(info.getRequestUri(), loadLinks(), loadItems(), loadQueries(), tpl, null);
@@ -60,9 +58,17 @@ public class SensorResource {
     @POST
     public Response create(@Context UriInfo info, Template template) {
 
-        LOG.info(template.toString());
 
-        return Response.created(info.getBaseUriBuilder().path("/sensors/{name}").build("1234")).build();
+        Optional<Sensor> newSensor = sensorStore.addSensor(template);
+
+        if (newSensor.isPresent()) {
+            return Response.created(info.getBaseUriBuilder().path("/sensors/{name}").build(newSensor.get().name)).build();
+        }
+        LOG.info("Noe galt skjedde.");
+
+
+        return Response.serverError().build();
+
 
     }
 
@@ -70,7 +76,7 @@ public class SensorResource {
         return sensorStore.getAllSensors().stream().map(r -> createItem(r)).collect(toList());
     }
 
-    private Item createItem(SensorDTO sensor) {
+    private Item createItem(Sensor sensor) {
 
         String itemUrl = "sensor/" + sensor.name;
 
@@ -81,11 +87,16 @@ public class SensorResource {
         props.add(Property.value("name", sensor.name));
         props.add(Property.value("location", sensor.location));
 
-        if (sensor.humidity.isPresent()) {
-            props.add(Property.value("humidity", sensor.humidity));
+        Optional<SensorReading> currentValue = sensor.getCurrentValue();
+
+        if(currentValue.isPresent()) {
+            SensorReading cv = currentValue.get();
+            props.add(Property.value("temperature", cv.temperature));
+            props.add(Property.value("time", cv.time));
+            if(cv.humidity.isPresent()) {
+                props.add(Property.value("humidity", cv.humidity.get()));
+            }
         }
-        props.add(Property.value("temperature", sensor.temperature));
-        props.add(Property.value("time", sensor.time));
 
         return Item.create(COLLECTION_URI.resolve(itemUrl), props, asList(readings));
 

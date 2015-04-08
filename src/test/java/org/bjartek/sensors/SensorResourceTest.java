@@ -60,15 +60,13 @@ public class SensorResourceTest {
     @Test
     public void testShouldBeAbleToAddNewSensor() {
 
-        List<Property> data = asList(Property.value("name", "TestSensor"), Property.value("location", "TestLocation"));
-        Template sensor = Template.create(data);
+        String sensorName = "TestSensor";
+        List<Property> data = asList(Property.value("name", sensorName), Property.value("location", "TestLocation"));
 
-        Collection col = Collection.builder().withTemplate(sensor).build();
+        Response resp = target.request("application/vnd.collection+json").post(Entity.entity(Template.create(data), MediaType.COLLECTION_JSON));
 
-        LOG.info(col.toString());
-        Response resp = target.request("application/vnd.collection+json").post(Entity.entity(col, MediaType.COLLECTION_JSON));
-
-
+        assertEquals(201, resp.getStatus());
+        assertEquals(target.getUriBuilder().path("/sensors/{name}").build(sensorName).toString(), resp.getHeaderString("Location"));
 
     }
 
@@ -77,6 +75,7 @@ public class SensorResourceTest {
         WebTarget webTarget = target.path("");
 
         Response head = webTarget.request().get();
+
         EntityTag eTag = head.getEntityTag();
         Assert.assertEquals(200, head.getStatus());
         Thread.sleep(1000);
