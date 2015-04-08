@@ -12,4 +12,6 @@ public interface SensorStore {
     String generateEtag();
 
     Optional<Sensor> addSensor(Template template);
+
+    boolean deleteSensor(String name);
 }

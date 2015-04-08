@@ -55,14 +55,26 @@ public class SensorResource {
         }
     }
 
+
+    @DELETE
+    @Path("/sensor/{name}")
+    public Response delete(@Context UriInfo info, @PathParam("name") String name) {
+
+        if (sensorStore.deleteSensor(name)) {
+            return Response.noContent().build();
+        } else {
+            return Response.serverError().build();
+        }
+
+    }
+
     @POST
     public Response create(@Context UriInfo info, Template template) {
-
 
         Optional<Sensor> newSensor = sensorStore.addSensor(template);
 
         if (newSensor.isPresent()) {
-            return Response.created(info.getBaseUriBuilder().path("/sensors/{name}").build(newSensor.get().name)).build();
+            return Response.created(info.getBaseUriBuilder().path("/sensor/{name}").build(newSensor.get().name)).build();
         }
         LOG.info("Noe galt skjedde.");
 
@@ -89,11 +101,11 @@ public class SensorResource {
 
         Optional<SensorReading> currentValue = sensor.getCurrentValue();
 
-        if(currentValue.isPresent()) {
+        if (currentValue.isPresent()) {
             SensorReading cv = currentValue.get();
             props.add(Property.value("temperature", cv.temperature));
             props.add(Property.value("time", cv.time));
-            if(cv.humidity.isPresent()) {
+            if (cv.humidity.isPresent()) {
                 props.add(Property.value("humidity", cv.humidity.get()));
             }
         }

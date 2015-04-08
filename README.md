@@ -36,5 +36,14 @@ So we use DTO's and annotations in them to state the intent of the item's in the
 the template/queries and other links for the collection resource? I think the best place would be in the 
 controller/resource object. That was you have two places where intent is stored. 
 
+## Testing with httpie
 
+### list sensors
+http :8080/sensors
 
+### Add a new sensor
+http :8080/sensors Content-Type:"application/vnd.collection+json" Accept:"*/*" < post.json
+
+### delete a sensor
+
+http DELETE :8080/sensors/sensor/TestSensor

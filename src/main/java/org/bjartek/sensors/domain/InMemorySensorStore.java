@@ -94,4 +94,11 @@ public class InMemorySensorStore implements SensorStore {
 
 
     }
+
+    @Override
+    public boolean deleteSensor(String name) {
+
+        return sensors.removeIf(s -> s.name.equalsIgnoreCase(name));
+
+    }
 }
